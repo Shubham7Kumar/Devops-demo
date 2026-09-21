@@ -496,3 +496,981 @@ Example:
 A ─── B ─── C
             ↑
           main
+
+# Phase 3 — Part 3: Git Branches
+
+## 1. What is a Branch?
+
+A Git branch is a separate line of development.
+
+It allows us to work on features, bug fixes, or experiments without directly disturbing the stable branch.
+
+Example:
+
+```text
+A → B → C
+        \
+         D → E
+```
+
+`main/master` can remain at `C` while the feature branch continues with `D` and `E`.
+
+---
+
+## 2. Why Use Branches?
+
+Branches are used to:
+
+* Develop features independently
+* Fix bugs separately
+* Experiment safely
+* Keep stable code separate
+* Review changes before merging
+* Allow multiple developers to work simultaneously
+
+Common branch names:
+
+```text
+main
+feature/login
+feature/payment
+bugfix/authentication
+hotfix/security
+```
+
+---
+
+## 3. Branch vs Commit
+
+### Commit
+
+A commit is a snapshot of the project at a particular point in time.
+
+### Branch
+
+A branch is a pointer/reference to a commit representing a line of development.
+
+### Remember:
+
+```text
+Commit = Snapshot
+Branch = Pointer
+```
+
+---
+
+## 4. Creating a Branch
+
+Create a branch:
+
+```bash
+git branch <branch-name>
+```
+
+Example:
+
+```bash
+git branch feature/login
+```
+
+This creates the branch but does not switch to it.
+
+---
+
+## 5. Create and Switch
+
+```bash
+git switch -c <branch-name>
+```
+
+Example:
+
+```bash
+git switch -c feature/login
+```
+
+This performs two operations:
+
+```text
+Create branch
+     +
+Switch to branch
+```
+
+---
+
+## 6. Check Current Branch
+
+```bash
+git branch
+```
+
+Example:
+
+```text
+  master
+* feature/login
+```
+
+`*` means the current branch.
+
+---
+
+## 7. Switch Branch
+
+```bash
+git switch <branch-name>
+```
+
+Examples:
+
+```bash
+git switch master
+git switch feature/login
+```
+
+---
+
+## 8. Branch and Commits
+
+Example:
+
+```text
+A → B → C → D → E
+        ↑        ↑
+      master   feature
+```
+
+Here:
+
+```text
+master  → C
+feature → E
+```
+
+The feature branch contains the newer commits while `master` remains at `C`.
+
+---
+
+## 9. View Branch History
+
+```bash
+git log --oneline --all --decorate
+```
+
+Useful options:
+
+```text
+--oneline   → short commit history
+--all       → show all branches
+--decorate  → show branch/HEAD references
+```
+
+---
+
+## 10. Delete a Branch
+
+Safe delete:
+
+```bash
+git branch -d <branch-name>
+```
+
+Force delete:
+
+```bash
+git branch -D <branch-name>
+```
+
+`-D` should be used carefully because it can delete an unmerged branch.
+
+---
+
+## 11. Typical Feature Workflow
+
+```text
+master
+   ↓
+create feature branch
+   ↓
+switch to feature
+   ↓
+modify code
+   ↓
+test
+   ↓
+git add
+   ↓
+git commit
+   ↓
+push branch
+   ↓
+Pull Request
+   ↓
+review
+   ↓
+merge
+```
+
+---
+
+## 12. Important Commands
+
+```bash
+git branch
+git branch <branch-name>
+git switch <branch-name>
+git switch -c <branch-name>
+git branch -d <branch-name>
+git branch -D <branch-name>
+git log --oneline --all --decorate
+```
+
+## Mental Model
+
+```text
+Commit = Snapshot
+Branch = Pointer
+
+A → B → C
+        ↑
+      master
+        \
+         D → E
+             ↑
+           feature
+```
+
+`master` and `feature` share the history up to `C`, then the feature branch develops independently.
+
+
+# Phase 3 — Part 4: GitHub & Remote Repository
+
+## 1. Git vs GitHub
+
+### Git
+
+Git is a distributed version control system used to track code changes, commits, branches, and history locally.
+
+### GitHub
+
+GitHub is an online platform for hosting Git repositories and collaborating on projects.
+
+```text
+Git = Version Control Tool
+GitHub = Remote Repository Hosting Platform
+```
+
+---
+
+## 2. Local Repository
+
+A Git repository exists locally inside the project.
+
+```text
+devops-demo-api/
+└── .git/
+```
+
+The `.git` directory contains Git's repository information and history.
+
+---
+
+## 3. Remote Repository
+
+A remote repository is another Git repository, usually hosted online.
+
+Example:
+
+```text
+Local Repository
+       │
+       ▼
+      Git
+       │
+       ▼
+GitHub Remote Repository
+```
+
+---
+
+## 4. What is `origin`?
+
+`origin` is the conventional name given to the main remote repository.
+
+Example:
+
+```bash
+git remote add origin <URL>
+```
+
+Here:
+
+```text
+origin = remote name
+URL    = remote repository address
+```
+
+---
+
+## 5. Add a Remote
+
+```bash
+git remote add origin <repository-url>
+```
+
+Example:
+
+```bash
+git remote add origin https://github.com/USERNAME/devops-demo-api.git
+```
+
+This connects the local repository to the GitHub repository.
+
+---
+
+## 6. Check Remotes
+
+```bash
+git remote -v
+```
+
+Example:
+
+```text
+origin  URL (fetch)
+origin  URL (push)
+```
+
+### Fetch
+
+Used when retrieving information/changes from the remote.
+
+### Push
+
+Used when sending local commits to the remote.
+
+---
+
+## 7. Local vs Remote
+
+Before connecting:
+
+```text
+Your PC
+   │
+   ▼
+Local Git Repository
+```
+
+After connecting:
+
+```text
+Your PC                         GitHub
+   │                              │
+   ▼                              ▼
+Local Repository ←── origin ──→ Remote Repository
+```
+
+---
+
+## 8. Why Connect GitHub?
+
+GitHub provides:
+
+* Remote backup
+* Collaboration
+* Pull Requests
+* Code review
+* GitHub Actions
+* CI/CD
+* Project visibility
+* Deployment integration
+
+---
+
+## 9. Important Commands
+
+```bash
+git remote -v
+```
+
+View configured remotes.
+
+```bash
+git remote add origin <URL>
+```
+
+Add a remote.
+
+```bash
+git remote remove origin
+```
+
+Remove a remote.
+
+```bash
+git remote set-url origin <URL>
+```
+
+Change the URL of an existing remote.
+
+---
+
+## 10. Mental Model
+
+```text
+Local Git Repository
+        │
+        │ origin
+        ▼
+GitHub Remote Repository
+```
+
+`origin` is simply the name of the remote.
+
+It is not a special GitHub command.
+
+# Phase 3 — Part 6: Git Fetch & Pull
+
+## 1. Why Fetch and Pull?
+
+`git push` sends local commits to the remote.
+
+`git fetch` and `git pull` bring information/changes from the remote.
+
+```text
+Local  ── push ──→  GitHub
+Local  ←─ fetch/pull ──  GitHub
+```
+
+---
+
+## 2. git fetch
+
+`git fetch` downloads information about changes from the remote repository without integrating those changes into the current local branch.
+
+```bash
+git fetch origin
+```
+
+Mental model:
+
+```text
+fetch = Get remote information
+        but don't integrate it yet
+```
+
+---
+
+## 3. git pull
+
+`git pull` gets changes from the remote and integrates them into the current local branch.
+
+```bash
+git pull
+```
+
+Simplified mental model:
+
+```text
+git pull
+   =
+git fetch
+   +
+integrate changes
+```
+
+---
+
+## 4. Fetch vs Pull
+
+### git fetch
+
+```text
+Remote
+   ↓
+Get information
+   ↓
+Remote-tracking references
+```
+
+Your current working branch is not automatically changed.
+
+### git pull
+
+```text
+Remote
+   ↓
+Fetch
+   ↓
+Integrate
+   ↓
+Current local branch
+```
+
+### Remember:
+
+```text
+fetch = "See what's changed."
+
+pull = "Bring the changes into my branch."
+```
+
+---
+
+## 5. Remote-Tracking Branch
+
+A remote-tracking branch represents the state of a branch on the remote.
+
+Examples:
+
+```text
+origin/master
+origin/feature/health-check
+```
+
+Example:
+
+```text
+Local branch:
+
+A → B → C
+        ↑
+      master
+
+
+Remote-tracking:
+
+A → B → C → D
+            ↑
+       origin/master
+```
+
+Here the local `master` is still at `C`, while the remote-tracking reference knows that GitHub is at `D`.
+
+---
+
+## 6. Check Remote Branches
+
+```bash
+git branch -r
+```
+
+Example:
+
+```text
+origin/master
+origin/feature/health-check
+```
+
+`-r` means remote branches.
+
+---
+
+## 7. Fetch Remote Changes
+
+```bash
+git fetch origin
+```
+
+Fetches information from the remote named `origin`.
+
+---
+
+## 8. Pull Remote Changes
+
+```bash
+git pull
+```
+
+Gets remote changes and integrates them into the current branch.
+
+---
+
+## 9. Important Commands
+
+```bash
+git fetch origin
+git pull
+git branch -r
+git log --oneline --all --decorate
+git status
+```
+
+---
+
+## 10. Push vs Pull
+
+```text
+git push
+     ↓
+Local → GitHub
+
+
+git pull
+     ↓
+GitHub → Local
+```
+
+More accurately:
+
+```text
+git push
+= send local commits to remote
+
+git pull
+= fetch remote changes + integrate them
+```
+
+---
+
+## 11. Typical Team Workflow
+
+```text
+        GitHub
+        ↕
+   git pull / push
+        ↕
+      Local
+        ↓
+     modify
+        ↓
+     git add
+        ↓
+    git commit
+        ↓
+     git push
+```
+
+---
+
+## 12. Mental Model
+
+```text
+fetch = inspect/update knowledge of remote
+
+pull = fetch + integrate
+
+push = send local commits to remote
+```
+
+### Easy memory:
+
+```text
+PUSH → Local → Remote
+PULL → Remote → Local
+FETCH → Remote information without integrating
+```
+# Phase 3 — Part 7: Git Clone & Team Workflow
+
+## 1. What is git clone?
+
+`git clone` creates a local copy of an existing remote Git repository.
+
+```bash
+git clone <repository-url>
+```
+
+Example:
+
+```bash
+git clone https://github.com/USERNAME/devops-demo-api.git
+```
+
+It brings:
+
+* Project files
+* Git history
+* Branch information
+* `.git` repository data
+* Remote configuration
+
+---
+
+## 2. Clone vs Download ZIP
+
+### Download ZIP
+
+```text
+GitHub
+  ↓
+ZIP
+  ↓
+Files only
+```
+
+### Git clone
+
+```text
+GitHub
+  ↓
+git clone
+  ↓
+Files
++
+Git history
++
+.git
++
+Remote configuration
+```
+
+Remember:
+
+```text
+ZIP   = Files
+CLONE = Files + Git Repository
+```
+
+---
+
+## 3. Clone is Usually a One-Time Operation
+
+When you don't have the repository:
+
+```bash
+git clone <URL>
+```
+
+After cloning, use:
+
+```bash
+git pull
+```
+
+to get later changes.
+
+```text
+First time → clone
+Later      → pull
+```
+
+---
+
+## 4. Clone Automatically Configures `origin`
+
+After:
+
+```bash
+git clone <URL>
+```
+
+Git automatically creates the remote:
+
+```text
+origin
+```
+
+Check it with:
+
+```bash
+git remote -v
+```
+
+Example:
+
+```text
+origin  <URL> (fetch)
+origin  <URL> (push)
+```
+
+You normally don't need to manually run:
+
+```bash
+git remote add origin ...
+```
+
+after cloning.
+
+---
+
+## 5. Clone vs Pull
+
+### git clone
+
+Used when the repository does not exist locally.
+
+```text
+Remote Repository
+       ↓
+    git clone
+       ↓
+Local Repository
+```
+
+### git pull
+
+Used when the repository already exists locally and you want newer remote changes.
+
+```text
+Existing Local Repository
+       ↓
+     git pull
+       ↓
+Updated Local Repository
+```
+
+---
+
+## 6. Typical Developer Workflow
+
+```text
+git clone
+   ↓
+git switch -c feature/...
+   ↓
+Modify code
+   ↓
+git add
+   ↓
+git commit
+   ↓
+git push
+   ↓
+Pull Request
+   ↓
+Review
+   ↓
+Merge
+```
+
+---
+
+## 7. Team Workflow
+
+Multiple developers work with the same remote repository.
+
+```text
+                 GitHub
+              Remote Repo
+             /     |      \
+            /      |       \
+           ↓       ↓        ↓
+       Developer Developer Developer
+           A       B         C
+```
+
+Each developer has their own local repository.
+
+They can create separate feature branches.
+
+---
+
+## 8. After a Feature is Merged
+
+If GitHub's `main` receives new commits:
+
+```text
+GitHub:
+A → B → C → D
+            ↑
+           main
+```
+
+Local `main` may still be:
+
+```text
+A → B → C
+        ↑
+       main
+```
+
+Update it with:
+
+```bash
+git switch main
+git pull
+```
+
+Now local `main` contains the latest remote changes.
+
+---
+
+## 9. Important Commands
+
+Clone repository:
+
+```bash
+git clone <URL>
+```
+
+Check remote:
+
+```bash
+git remote -v
+```
+
+Check local branches:
+
+```bash
+git branch
+```
+
+Check remote branches:
+
+```bash
+git branch -r
+```
+
+Check history:
+
+```bash
+git log --oneline --decorate
+```
+
+Update existing repository:
+
+```bash
+git pull
+```
+
+---
+
+## 10. Complete Mental Model
+
+```text
+                GitHub
+                   │
+                 clone
+                   ↓
+            Local Repository
+                   │
+            create branch
+                   ↓
+            Feature Branch
+                   │
+                modify
+                   ↓
+               git add
+                   ↓
+             git commit
+                   ↓
+              git push
+                   ↓
+                GitHub
+                   │
+             Pull Request
+                   ↓
+                Review
+                   ↓
+                 Merge
+                   ↓
+                 main
+```
+
+### Easy Memory
+
+```text
+clone → get repository first time
+
+fetch → see remote changes
+
+pull → bring remote changes
+
+add → stage changes
+
+commit → save snapshot locally
+
+push → send commits to remote
+```
