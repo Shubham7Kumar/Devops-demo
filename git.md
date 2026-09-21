@@ -496,3 +496,689 @@ Example:
 A ─── B ─── C
             ↑
           main
+
+# Phase 3 — Part 3: Git Branches
+
+## 1. What is a Branch?
+
+A Git branch is a separate line of development.
+
+It allows us to work on features, bug fixes, or experiments without directly disturbing the stable branch.
+
+Example:
+
+```text
+A → B → C
+        \
+         D → E
+```
+
+`main/master` can remain at `C` while the feature branch continues with `D` and `E`.
+
+---
+
+## 2. Why Use Branches?
+
+Branches are used to:
+
+* Develop features independently
+* Fix bugs separately
+* Experiment safely
+* Keep stable code separate
+* Review changes before merging
+* Allow multiple developers to work simultaneously
+
+Common branch names:
+
+```text
+main
+feature/login
+feature/payment
+bugfix/authentication
+hotfix/security
+```
+
+---
+
+## 3. Branch vs Commit
+
+### Commit
+
+A commit is a snapshot of the project at a particular point in time.
+
+### Branch
+
+A branch is a pointer/reference to a commit representing a line of development.
+
+### Remember:
+
+```text
+Commit = Snapshot
+Branch = Pointer
+```
+
+---
+
+## 4. Creating a Branch
+
+Create a branch:
+
+```bash
+git branch <branch-name>
+```
+
+Example:
+
+```bash
+git branch feature/login
+```
+
+This creates the branch but does not switch to it.
+
+---
+
+## 5. Create and Switch
+
+```bash
+git switch -c <branch-name>
+```
+
+Example:
+
+```bash
+git switch -c feature/login
+```
+
+This performs two operations:
+
+```text
+Create branch
+     +
+Switch to branch
+```
+
+---
+
+## 6. Check Current Branch
+
+```bash
+git branch
+```
+
+Example:
+
+```text
+  master
+* feature/login
+```
+
+`*` means the current branch.
+
+---
+
+## 7. Switch Branch
+
+```bash
+git switch <branch-name>
+```
+
+Examples:
+
+```bash
+git switch master
+git switch feature/login
+```
+
+---
+
+## 8. Branch and Commits
+
+Example:
+
+```text
+A → B → C → D → E
+        ↑        ↑
+      master   feature
+```
+
+Here:
+
+```text
+master  → C
+feature → E
+```
+
+The feature branch contains the newer commits while `master` remains at `C`.
+
+---
+
+## 9. View Branch History
+
+```bash
+git log --oneline --all --decorate
+```
+
+Useful options:
+
+```text
+--oneline   → short commit history
+--all       → show all branches
+--decorate  → show branch/HEAD references
+```
+
+---
+
+## 10. Delete a Branch
+
+Safe delete:
+
+```bash
+git branch -d <branch-name>
+```
+
+Force delete:
+
+```bash
+git branch -D <branch-name>
+```
+
+`-D` should be used carefully because it can delete an unmerged branch.
+
+---
+
+## 11. Typical Feature Workflow
+
+```text
+master
+   ↓
+create feature branch
+   ↓
+switch to feature
+   ↓
+modify code
+   ↓
+test
+   ↓
+git add
+   ↓
+git commit
+   ↓
+push branch
+   ↓
+Pull Request
+   ↓
+review
+   ↓
+merge
+```
+
+---
+
+## 12. Important Commands
+
+```bash
+git branch
+git branch <branch-name>
+git switch <branch-name>
+git switch -c <branch-name>
+git branch -d <branch-name>
+git branch -D <branch-name>
+git log --oneline --all --decorate
+```
+
+## Mental Model
+
+```text
+Commit = Snapshot
+Branch = Pointer
+
+A → B → C
+        ↑
+      master
+        \
+         D → E
+             ↑
+           feature
+```
+
+`master` and `feature` share the history up to `C`, then the feature branch develops independently.
+
+
+# Phase 3 — Part 4: GitHub & Remote Repository
+
+## 1. Git vs GitHub
+
+### Git
+
+Git is a distributed version control system used to track code changes, commits, branches, and history locally.
+
+### GitHub
+
+GitHub is an online platform for hosting Git repositories and collaborating on projects.
+
+```text
+Git = Version Control Tool
+GitHub = Remote Repository Hosting Platform
+```
+
+---
+
+## 2. Local Repository
+
+A Git repository exists locally inside the project.
+
+```text
+devops-demo-api/
+└── .git/
+```
+
+The `.git` directory contains Git's repository information and history.
+
+---
+
+## 3. Remote Repository
+
+A remote repository is another Git repository, usually hosted online.
+
+Example:
+
+```text
+Local Repository
+       │
+       ▼
+      Git
+       │
+       ▼
+GitHub Remote Repository
+```
+
+---
+
+## 4. What is `origin`?
+
+`origin` is the conventional name given to the main remote repository.
+
+Example:
+
+```bash
+git remote add origin <URL>
+```
+
+Here:
+
+```text
+origin = remote name
+URL    = remote repository address
+```
+
+---
+
+## 5. Add a Remote
+
+```bash
+git remote add origin <repository-url>
+```
+
+Example:
+
+```bash
+git remote add origin https://github.com/USERNAME/devops-demo-api.git
+```
+
+This connects the local repository to the GitHub repository.
+
+---
+
+## 6. Check Remotes
+
+```bash
+git remote -v
+```
+
+Example:
+
+```text
+origin  URL (fetch)
+origin  URL (push)
+```
+
+### Fetch
+
+Used when retrieving information/changes from the remote.
+
+### Push
+
+Used when sending local commits to the remote.
+
+---
+
+## 7. Local vs Remote
+
+Before connecting:
+
+```text
+Your PC
+   │
+   ▼
+Local Git Repository
+```
+
+After connecting:
+
+```text
+Your PC                         GitHub
+   │                              │
+   ▼                              ▼
+Local Repository ←── origin ──→ Remote Repository
+```
+
+---
+
+## 8. Why Connect GitHub?
+
+GitHub provides:
+
+* Remote backup
+* Collaboration
+* Pull Requests
+* Code review
+* GitHub Actions
+* CI/CD
+* Project visibility
+* Deployment integration
+
+---
+
+## 9. Important Commands
+
+```bash
+git remote -v
+```
+
+View configured remotes.
+
+```bash
+git remote add origin <URL>
+```
+
+Add a remote.
+
+```bash
+git remote remove origin
+```
+
+Remove a remote.
+
+```bash
+git remote set-url origin <URL>
+```
+
+Change the URL of an existing remote.
+
+---
+
+## 10. Mental Model
+
+```text
+Local Git Repository
+        │
+        │ origin
+        ▼
+GitHub Remote Repository
+```
+
+`origin` is simply the name of the remote.
+
+It is not a special GitHub command.
+
+# Phase 3 — Part 5: Git Push
+
+## 1. What is git push?
+
+`git push` sends local commits to a remote Git repository.
+
+```text
+Local Repository
+      │
+      │ git push
+      ▼
+Remote Repository
+```
+
+Example:
+
+```bash
+git push origin master
+```
+
+---
+
+## 2. Git Workflow
+
+The basic workflow is:
+
+```text
+Working Directory
+       ↓
+    git add
+       ↓
+Staging Area
+       ↓
+   git commit
+       ↓
+Local Repository
+       ↓
+   git push
+       ↓
+Remote Repository
+```
+
+Remember:
+
+```text
+git add     → Stage changes
+git commit  → Save snapshot locally
+git push    → Send commits to remote
+```
+
+---
+
+## 3. Basic Push Command
+
+```bash
+git push origin <branch-name>
+```
+
+Example:
+
+```bash
+git push origin master
+```
+
+This means:
+
+```text
+git push
+   ↓
+send commits
+   ↓
+origin
+   ↓
+remote repository
+   ↓
+master
+   ↓
+target branch
+```
+
+---
+
+## 4. First Push of a New Branch
+
+```bash
+git push -u origin <branch-name>
+```
+
+Example:
+
+```bash
+git push -u origin feature/health-check
+```
+
+`-u` sets the upstream/tracking relationship between the local and remote branch.
+
+After that, future pushes can usually be:
+
+```bash
+git push
+```
+
+---
+
+## 5. Local Branch vs Remote Branch
+
+Local:
+
+```text
+feature/health-check
+```
+
+Remote:
+
+```text
+origin/feature/health-check
+```
+
+The remote branch exists on GitHub.
+
+Example:
+
+```text
+Local                         GitHub
+
+feature/health-check  ─────→  origin/feature/health-check
+```
+
+---
+
+## 6. Push Does NOT Mean Upload Files Directly
+
+Git pushes commits, not just individual files.
+
+Correct mental model:
+
+```text
+Modify
+  ↓
+git add
+  ↓
+git commit
+  ↓
+git push
+```
+
+A file must normally be included in a commit before that commit can be pushed.
+
+---
+
+## 7. Check Current Branch
+
+```bash
+git branch
+```
+
+Example:
+
+```text
+  master
+* feature/health-check
+```
+
+`*` = current branch.
+
+---
+
+## 8. Check Tracking Branch
+
+```bash
+git branch -vv
+```
+
+Example:
+
+```text
+* feature/health-check abc1234 [origin/feature/health-check]
+```
+
+This shows that the local branch tracks the remote branch.
+
+---
+
+## 9. View Remote
+
+```bash
+git remote -v
+```
+
+Example:
+
+```text
+origin  <URL> (fetch)
+origin  <URL> (push)
+```
+
+---
+
+## 10. Important Commands
+
+```bash
+git push origin <branch-name>
+```
+
+Push a branch.
+
+```bash
+git push -u origin <branch-name>
+```
+
+Push a new branch and set upstream.
+
+```bash
+git push
+```
+
+Push to the configured upstream branch.
+
+```bash
+git branch -vv
+```
+
+View branch tracking information.
+
+---
+
+## 11. Mental Model
+
+```text
+                    LOCAL
+                      │
+                 git commit
+                      │
+                      ▼
+               Local Repository
+                      │
+                  git push
+                      │
+                      ▼
+                    GITHUB
+                      │
+                      ▼
+              Remote Repository
+```
+
+### Remember
+
+```text
+Commit = Local snapshot
+Push   = Send commits to remote
+```

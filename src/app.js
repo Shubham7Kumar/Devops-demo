@@ -45,6 +45,13 @@ app.get("/health",(req,res) => {
         environment: NODE_ENV,
         service: 'Health Check up'
     })
+});
+
+app.get("/login",(req,res) => {
+  res.status(200).json({
+    status:"OK",
+    message: "Login Successfully.."
+  })
 })
 
 
