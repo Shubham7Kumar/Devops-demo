@@ -1,3 +1,4 @@
+// DevOps learning project
 import express from 'express';
 import dotenv from "dotenv";
 import DemoUser from './model/demoUser.model.js';
@@ -41,7 +42,8 @@ It answers a simple question:
 app.get("/health",(req,res) => {
     res.status(200).json({
         status: "OK",
-        environment: NODE_ENV
+        environment: NODE_ENV,
+        service: 'Health Check up'
     })
 })
 
