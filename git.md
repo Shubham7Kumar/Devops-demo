@@ -1474,3 +1474,917 @@ commit → save snapshot locally
 
 push → send commits to remote
 ```
+
+
+# Phase 3 — Part 8: Git Merge
+
+## 1. What is Git Merge?
+
+`git merge` combines changes from one branch into another branch.
+
+Mental model:
+
+```text
+Feature Branch
+      ↓
+    merge
+      ↓
+Main Branch
+```
+
+Important:
+
+```bash
+git merge <branch>
+```
+
+means:
+
+> Merge `<branch>` INTO the CURRENT branch.
+
+---
+
+## 2. Basic Syntax
+
+```bash
+git merge <branch-name>
+```
+
+Example:
+
+```bash
+git switch main
+git merge feature/login
+```
+
+Meaning:
+
+```text
+feature/login
+      ↓
+    merge
+      ↓
+main
+```
+
+---
+
+## 3. Branch Example
+
+Before merge:
+
+```text
+        D → E
+       /
+A → B → C
+       ↑
+      main
+```
+
+After merge:
+
+```text
+A → B → C → D → E
+                  ↑
+                 main
+```
+
+Depending on the history, Git may use a fast-forward merge or create a merge commit.
+
+---
+
+## 4. Fast-Forward Merge
+
+If the target branch has not moved forward:
+
+```text
+A → B → C → D → E
+```
+
+Git can simply move the branch pointer forward.
+
+This is called:
+
+**Fast-forward merge**
+
+---
+
+## 5. Merge Commit
+
+If both branches have new commits:
+
+```text
+        D → E
+       /     \
+A → B         M
+       \     /
+        F → G
+```
+
+`M` can be a merge commit.
+
+---
+
+## 6. Merge Conflict
+
+A conflict happens when Git cannot automatically determine which changes should be kept.
+
+Typical situation:
+
+```text
+main changes same code
+        +
+feature changes same code
+        =
+possible conflict
+```
+
+Git may show:
+
+```text
+<<<<<<< HEAD
+current branch
+=======
+other branch
+>>>>>>> feature
+```
+
+Resolve the file manually.
+
+Then:
+
+```bash
+git add <file>
+git commit
+```
+
+---
+
+## 7. Typical Feature Workflow
+
+```text
+main
+ ↓
+create feature branch
+ ↓
+modify code
+ ↓
+git add
+ ↓
+git commit
+ ↓
+git push
+ ↓
+Pull Request
+ ↓
+review
+ ↓
+merge
+ ↓
+main
+```
+
+---
+
+## 8. Local Merge
+
+```bash
+git switch main
+git pull
+git merge feature/health-check
+git push origin main
+```
+
+---
+
+## 9. Pull Request vs Merge
+
+Pull Request:
+
+* GitHub collaboration feature
+* Used for review/discussion
+* Usually created from a feature branch
+
+Merge:
+
+* Git operation
+* Combines branch histories
+* Can be performed locally or through GitHub
+
+---
+
+## 10. Useful Commands
+
+```bash
+git branch
+git status
+git log --oneline --decorate --graph --all
+git switch <branch>
+git pull
+git merge <branch>
+git push origin <branch>
+```
+
+---
+
+## 11. Direction Rule
+
+Always remember:
+
+```bash
+git merge OTHER_BRANCH
+```
+
+means:
+
+```text
+CURRENT BRANCH
+      ↑
+receives changes
+      ↑
+OTHER BRANCH
+```
+
+Example:
+
+```bash
+git switch main
+git merge feature/login
+```
+
+Result:
+
+```text
+feature/login
+      ↓
+     main
+```
+
+---
+
+## 12. Easy Memory
+
+```text
+branch  = separate line
+commit  = snapshot
+push    = local → remote
+fetch   = check remote
+pull    = remote → local + integrate
+merge   = combine branches
+PR      = request/review before merging
+```
+
+## 13. Complete Git Flow
+
+```text
+GitHub
+  ↓
+clone
+  ↓
+Local Repository
+  ↓
+create branch
+  ↓
+Feature Branch
+  ↓
+modify code
+  ↓
+git add
+  ↓
+git commit
+  ↓
+git push
+  ↓
+GitHub
+  ↓
+Pull Request
+  ↓
+Review
+  ↓
+Merge
+  ↓
+main
+```
+
+# Phase 3 — Part 9: Git Merge Conflicts
+
+## 1. What is a Merge Conflict?
+
+A merge conflict occurs when Git cannot automatically combine changes from two branches.
+
+Common situation:
+
+```text
+main changes the same code
+        +
+feature changes the same code
+        ↓
+Git cannot safely decide
+        ↓
+CONFLICT
+```
+
+---
+
+## 2. Why Does Git Need the Developer?
+
+Git understands code changes, but it does not understand the intended business meaning.
+
+Example:
+
+```js
+PORT = 5000;
+```
+
+versus:
+
+```js
+PORT = 8000;
+```
+
+Git cannot know which value the application actually needs.
+
+The developer must decide.
+
+---
+
+## 3. Conflict Markers
+
+Git may place markers like:
+
+```text
+<<<<<<< HEAD
+CURRENT BRANCH VERSION
+=======
+INCOMING BRANCH VERSION
+>>>>>>> feature/login
+```
+
+Meaning:
+
+```text
+<<<<<<< HEAD
+Current branch
+=======
+Incoming branch
+>>>>>>> branch-name
+```
+
+---
+
+## 4. How to Resolve a Conflict
+
+Basic workflow:
+
+```text
+git merge
+    ↓
+CONFLICT
+    ↓
+git status
+    ↓
+Open conflicting file
+    ↓
+Understand both versions
+    ↓
+Choose/combine the correct code
+    ↓
+Remove conflict markers
+    ↓
+Test
+    ↓
+git add
+    ↓
+git commit
+```
+
+---
+
+## 5. Important Commands
+
+Check conflict:
+
+```bash
+git status
+```
+
+Stage resolved file:
+
+```bash
+git add <file>
+```
+
+Complete merge:
+
+```bash
+git commit
+```
+
+Abort merge:
+
+```bash
+git merge --abort
+```
+
+View history:
+
+```bash
+git log --oneline --decorate --graph --all
+```
+
+---
+
+## 6. Example
+
+Conflict:
+
+```js
+<<<<<<< HEAD
+service: "production-api",
+=======
+service: "development-api",
+>>>>>>> feature/test
+```
+
+After resolving:
+
+```js
+service: "devops-demo-api",
+```
+
+The conflict markers must be removed.
+
+---
+
+## 7. `git add` After Conflict
+
+After manually fixing the file:
+
+```bash
+git add src/app.js
+```
+
+This tells Git:
+
+> The conflict in this file has been resolved.
+
+Then:
+
+```bash
+git commit
+```
+
+---
+
+## 8. Abort a Merge
+
+If you don't want to continue:
+
+```bash
+git merge --abort
+```
+
+This attempts to return the repository to the state before the merge began.
+
+---
+
+## 9. Normal Merge vs Conflict
+
+Normal:
+
+```text
+git merge
+   ↓
+Git combines changes
+   ↓
+Success
+```
+
+Conflict:
+
+```text
+git merge
+   ↓
+Git cannot combine changes
+   ↓
+Conflict
+   ↓
+Developer resolves
+   ↓
+git add
+   ↓
+git commit
+```
+
+---
+
+## 10. Important Rule
+
+Never leave conflict markers in the final code:
+
+```text
+<<<<<<<
+=======
+>>>>>>>
+```
+
+They must be removed before completing the merge.
+
+---
+
+## 11. Complete Conflict-Resolution Cheat Sheet
+
+```bash
+git status
+
+# inspect conflicting files
+
+# manually resolve files
+
+npm test
+
+git add <resolved-file>
+
+git status
+
+git commit -m "Resolve merge conflict"
+
+git status
+
+git log --oneline --decorate --graph --all
+```
+
+If you want to abandon the merge:
+
+```bash
+git merge --abort
+```
+
+---
+
+## 12. Easy Memory
+
+```text
+merge conflict
+      ↓
+Git asks: "Which version?"
+      ↓
+Developer decides
+      ↓
+Fix file
+      ↓
+Remove markers
+      ↓
+Test
+      ↓
+git add
+      ↓
+git commit
+```
+
+## 13. Golden Rule
+
+```text
+Git decides HOW changes can be combined.
+Developer decides WHAT the final code should be.
+```
+
+# Phase 3 — Part 10: Git Restore, Reset & Revert
+
+## 1. Three Important Undo Tools
+
+```text
+git restore → undo file changes
+git reset   → move HEAD / branch history
+git revert  → create a new commit that undoes an old commit
+```
+
+---
+
+# 2. Git Areas
+
+```text
+Working Directory
+       ↓ git add
+Staging Area
+       ↓ git commit
+Repository / History
+```
+
+---
+
+# 3. git restore
+
+Used mainly to restore files.
+
+Discard an unstaged modification:
+
+```bash
+git restore <file>
+```
+
+Example:
+
+```bash
+git restore src/app.js
+```
+
+Meaning:
+
+> Restore the file to its last committed version.
+
+⚠️ Uncommitted changes can be lost.
+
+---
+
+# 4. git restore --staged
+
+Remove a file from staging while keeping the changes:
+
+```bash
+git restore --staged <file>
+```
+
+Example:
+
+```bash
+git restore --staged src/app.js
+```
+
+Meaning:
+
+```text
+STAGED
+  ↓
+UNSTAGED
+```
+
+The changes remain in the working directory.
+
+---
+
+# 5. HEAD
+
+`HEAD` represents the current commit position.
+
+Example:
+
+```text
+A → B → C
+         ↑
+        HEAD
+```
+
+---
+
+# 6. HEAD~1
+
+```text
+HEAD   = current commit
+HEAD~1 = previous commit
+HEAD~2 = two commits before
+```
+
+Example:
+
+```text
+A → B → C
+    ↑    ↑
+  HEAD~1 HEAD
+```
+
+---
+
+# 7. git reset
+
+Reset moves the current branch/HEAD to another commit.
+
+Common forms:
+
+```bash
+git reset --soft HEAD~1
+git reset HEAD~1
+git reset --mixed HEAD~1
+git reset --hard HEAD~1
+```
+
+---
+
+# 8. Soft Reset
+
+```bash
+git reset --soft HEAD~1
+```
+
+Result:
+
+```text
+HEAD moves back
+Changes remain staged
+```
+
+Mental model:
+
+> Undo the commit but keep the changes ready to commit.
+
+---
+
+# 9. Mixed Reset
+
+```bash
+git reset HEAD~1
+```
+
+Default mode:
+
+```bash
+git reset --mixed HEAD~1
+```
+
+Result:
+
+```text
+HEAD moves back
+Changes remain in working directory
+Changes are unstaged
+```
+
+Mental model:
+
+> Undo the commit and unstage the changes, but keep the work.
+
+---
+
+# 10. Hard Reset
+
+```bash
+git reset --hard HEAD~1
+```
+
+Result:
+
+```text
+HEAD moves back
+Staging changes removed
+Working-tree changes removed
+```
+
+Mental model:
+
+> Make the project match the target commit.
+
+⚠️ Dangerous because work can be discarded.
+
+Do not use casually.
+
+---
+
+# 11. git revert
+
+`git revert` creates a NEW commit that reverses an earlier commit.
+
+Example:
+
+```text
+Before:
+
+A → B → C
+```
+
+Run:
+
+```bash
+git revert C
+```
+
+After:
+
+```text
+A → B → C → D
+```
+
+Where D reverses the changes introduced by C.
+
+The original C still exists.
+
+---
+
+# 12. Reset vs Revert
+
+```text
+RESET
+→ moves history/HEAD
+
+REVERT
+→ adds a new commit that reverses old changes
+```
+
+Simple rule:
+
+```text
+Local/private mistake
+        ↓
+reset can be useful
+
+Already shared/pushed history
+        ↓
+revert is generally safer
+```
+
+---
+
+# 13. Restore vs Reset vs Revert
+
+| Command       | Main Purpose                       |
+| ------------- | ---------------------------------- |
+| `git restore` | Restore file contents              |
+| `git reset`   | Move HEAD / change staging/history |
+| `git revert`  | Reverse a commit with a new commit |
+
+---
+
+# 14. Useful Commands
+
+Discard unstaged file changes:
+
+```bash
+git restore <file>
+```
+
+Unstage file:
+
+```bash
+git restore --staged <file>
+```
+
+Soft reset:
+
+```bash
+git reset --soft HEAD~1
+```
+
+Mixed reset:
+
+```bash
+git reset HEAD~1
+```
+
+Hard reset:
+
+```bash
+git reset --hard HEAD~1
+```
+
+Revert latest commit:
+
+```bash
+git revert HEAD
+```
+
+View history:
+
+```bash
+git log --oneline --decorate --graph
+```
+
+---
+
+# 15. Safe Undo Mental Model
+
+```text
+"I changed a file by mistake"
+        ↓
+git restore
+
+"I staged the wrong file"
+        ↓
+git restore --staged
+
+"I committed too early"
+        ↓
+git reset
+
+"I need to undo a shared commit"
+        ↓
+git revert
+```
+
+---
+
+# 16. Golden Rule
+
+```text
+restore → file
+reset   → history/HEAD
+revert  → new undo commit
+```
+
+And remember:
+
+```text
+git reset --hard
+        ↓
+Potentially destructive
+        ↓
+Use carefully
+```
