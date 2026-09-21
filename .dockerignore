@@ -1,0 +1,41 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+coverage
+
+========================================================
+DEVOPS NOTEBOOK — .dockerignore
+========================================================
+
+.dockerignore tells Docker what NOT to send as build
+context when building an image.
+
+Common examples:
+
+node_modules
+.git
+.env
+coverage
+
+WHY?
+
+1. Smaller build context
+2. Faster builds
+3. Avoid unnecessary files
+4. Avoid accidentally including local secrets
+
+IMPORTANT:
+
+.gitignore and .dockerignore have different purposes.
+
+.gitignore
+    ↓
+Controls what Git tracks.
+
+.dockerignore
+    ↓
+Controls what Docker receives during build.
+
+========================================================*/
