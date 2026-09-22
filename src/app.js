@@ -13,7 +13,7 @@ const app = express();
 const NODE_ENV = process.env.NODE_ENV || "development";
 
 app.use(cors({
-  origin: 'https://devops-demo-frontend.vercel.app/'
+  origin: ['https://devops-demo-frontend.vercel.app','http://localhost:5173']
 }))
 app.use(express.json());
 
