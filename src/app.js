@@ -51,6 +51,14 @@ app.get("/health",(req,res) => {
     })
 })
 
+app.get("/api-info",(req,res) => {
+  res.json({
+    name: "devops-demo-api",
+    version: "1.0.1",
+    environment: NODE_ENV
+  })
+})
+
 
 // ======================================================
 // DEVOPS NOTEBOOK — DATABASE TEST ROUTES
