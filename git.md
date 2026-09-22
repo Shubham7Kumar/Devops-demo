@@ -2388,3 +2388,1624 @@ Potentially destructive
         ↓
 Use carefully
 ```
+# Phase 3 — Part 11: Git Tags & Releases
+
+## 1. What is a Git Tag?
+
+A Git tag is a named reference to a specific commit.
+
+Example:
+
+```text
+A → B → C → D
+         ↑
+       v1.0.0
+```
+
+Tag = fixed label for an important commit.
+
+---
+
+## 2. Branch vs Tag
+
+```text
+Branch = moving pointer
+Tag    = fixed label
+```
+
+A branch normally moves when new commits are created.
+
+A tag normally remains attached to the commit where it was created.
+
+---
+
+## 3. Why Use Tags?
+
+Tags are commonly used to mark:
+
+* Releases
+* Production versions
+* Stable versions
+* Milestones
+* Important project states
+
+Examples:
+
+```text
+v1.0.0
+v1.1.0
+v1.1.1
+v2.0.0
+```
+
+---
+
+## 4. Semantic Versioning
+
+Common format:
+
+```text
+MAJOR.MINOR.PATCH
+```
+
+Example:
+
+```text
+v2.4.1
+│ │ │
+│ │ └── PATCH
+│ └──── MINOR
+└────── MAJOR
+```
+
+General convention:
+
+```text
+MAJOR → breaking changes
+MINOR → new backward-compatible features
+PATCH → bug fixes
+```
+
+Git itself does not enforce this convention.
+
+---
+
+## 5. Lightweight Tag
+
+Create:
+
+```bash
+git tag v1.0.0
+```
+
+A lightweight tag is a simple reference to a commit.
+
+---
+
+## 6. Annotated Tag
+
+Create:
+
+```bash
+git tag -a v1.0.0 -m "First stable release"
+```
+
+Annotated tags contain additional metadata such as:
+
+* tagger
+* date
+* message
+* referenced commit
+
+For release versions, annotated tags are commonly useful.
+
+---
+
+## 7. List Tags
+
+```bash
+git tag
+```
+
+---
+
+## 8. Show a Tag
+
+```bash
+git show v1.0.0
+```
+
+Shows information about the tag and referenced commit.
+
+---
+
+## 9. Push a Tag
+
+Push one tag:
+
+```bash
+git push origin v1.0.0
+```
+
+Push all tags:
+
+```bash
+git push origin --tags
+```
+
+Important:
+
+```text
+git push
+```
+
+does not mean "push every local tag."
+
+---
+
+## 10. Tag a Specific Commit
+
+First:
+
+```bash
+git log --oneline
+```
+
+Then:
+
+```bash
+git tag -a v0.9.0 <commit-hash> -m "Previous release"
+```
+
+Example:
+
+```bash
+git tag -a v0.9.0 98e4408 -m "Initial version"
+```
+
+---
+
+## 11. Delete Local Tag
+
+```bash
+git tag -d v1.0.0
+```
+
+This removes the tag locally.
+
+It does not delete the commit.
+
+---
+
+## 12. Delete Remote Tag
+
+```bash
+git push origin --delete v1.0.0
+```
+
+Removes the tag from the remote repository.
+
+The commit still exists.
+
+---
+
+## 13. Git Tag vs GitHub Release
+
+```text
+Git Tag
+   ↓
+points to a commit
+
+GitHub Release
+   ↓
+publishes information/assets around a tag
+```
+
+Tag = Git concept.
+
+Release = GitHub publishing concept.
+
+---
+
+## 14. Typical Release Workflow
+
+```text
+Develop
+  ↓
+git add
+  ↓
+git commit
+  ↓
+git push
+  ↓
+Pull Request
+  ↓
+Review
+  ↓
+Merge
+  ↓
+main
+  ↓
+git tag v1.0.0
+  ↓
+git push origin v1.0.0
+  ↓
+Release / Deployment
+```
+
+---
+
+## 15. Production Connection
+
+A versioned Docker image may look like:
+
+```text
+devops-demo-api:v1.0.0
+```
+
+instead of only:
+
+```text
+devops-demo-api:latest
+```
+
+Version tags make specific releases easier to identify and reproduce.
+
+---
+
+## 16. Important Commands
+
+```bash
+git tag
+git tag v1.0.0
+git tag -a v1.0.0 -m "Release v1.0.0"
+git show v1.0.0
+git push origin v1.0.0
+git push origin --tags
+git tag -d v1.0.0
+git push origin --delete v1.0.0
+```
+
+---
+
+## 17. Easy Memory
+
+```text
+Branch → moving pointer
+Tag    → fixed label
+Commit → snapshot
+Release → published version
+```
+
+---
+
+## 18. Golden Mental Model
+
+```text
+Commit
+  ↓
+Tag
+  ↓
+Version
+  ↓
+Release
+  ↓
+Deployment
+```
+
+Example:
+
+```text
+commit abc123
+     ↓
+   v1.0.0
+     ↓
+GitHub Release
+     ↓
+Production
+```
+# Phase 3 — Part 12: .gitignore Deep Dive
+
+## 1. What is .gitignore?
+
+`.gitignore` tells Git which untracked files/directories should normally be ignored.
+
+Example:
+
+```text id="0a4f2x"
+node_modules/
+.env
+coverage/
+```
+
+---
+
+## 2. Why Use .gitignore?
+
+Common reasons:
+
+* Sensitive configuration
+* Generated files
+* Dependencies
+* Build output
+* Logs
+* Machine-specific files
+
+---
+
+## 3. Important Node.js Rules
+
+```text id="n3x7c9"
+node_modules/
+.env
+coverage/
+```
+
+Common additional rule:
+
+```text id="w8q2k5"
+*.log
+```
+
+---
+
+## 4. node_modules
+
+Do not normally commit `node_modules`.
+
+Instead commit:
+
+```text id="4x7m2n"
+package.json
+package-lock.json
+```
+
+Then recreate dependencies:
+
+```bash id="y5n8v3"
+npm ci
+```
+
+Flow:
+
+```text id="4a8r6k"
+package.json
+package-lock.json
+       ↓
+     npm ci
+       ↓
+node_modules
+```
+
+---
+
+## 5. .env vs .env.example
+
+```text id="6q1w8p"
+.env
+→ actual local configuration
+→ usually ignored
+
+.env.example
+→ configuration template
+→ usually committed
+```
+
+Example:
+
+```env id="5v9j2k"
+PORT=5000
+MONGO_URI=
+REDIS_URL=
+```
+
+---
+
+## 6. Important Warning
+
+`.gitignore` is NOT a security mechanism.
+
+It prevents normal accidental tracking of untracked files.
+
+It does not automatically remove a file from Git history.
+
+---
+
+## 7. Common Patterns
+
+Exact file:
+
+```text id="h6t3p1"
+.env
+```
+
+Directory:
+
+```text id="k8m4q2"
+node_modules/
+```
+
+All `.log` files:
+
+```text id="p7x1s5"
+*.log
+```
+
+Root-specific directory:
+
+```text id="z4n9c6"
+/temp
+```
+
+---
+
+## 8. Wildcard
+
+`*` is a wildcard.
+
+```text id="b6w2r8"
+*.log
+```
+
+matches:
+
+```text id="3m7x1q"
+app.log
+server.log
+error.log
+```
+
+---
+
+## 9. Negation
+
+`!` means do not ignore the matching pattern.
+
+Example:
+
+```text id="c9v4k7"
+*.log
+!important.log
+```
+
+Meaning:
+
+```text id="2q6n8s"
+Ignore all .log files
+except important.log
+```
+
+---
+
+## 10. Already Tracked File
+
+If a file is already tracked, adding it to `.gitignore` does not automatically stop tracking it.
+
+Example:
+
+```text id="w3r7m2"
+.env
+```
+
+was already committed.
+
+To stop tracking while keeping the local file:
+
+```bash id="x6p1q8"
+git rm --cached .env
+```
+
+Then:
+
+```bash id="j9k4s2"
+git commit -m "Stop tracking .env"
+```
+
+---
+
+## 11. --cached
+
+```bash id="v8m2x6"
+git rm --cached <file>
+```
+
+means:
+
+```text id="f2q7n1"
+Git tracking → remove
+Local file   → keep
+```
+
+---
+
+## 12. If a Secret Was Already Pushed
+
+`.gitignore` does not erase old history.
+
+If a real credential was exposed:
+
+```text id="r5k8q2"
+1. Rotate/revoke credential
+2. Remove sensitive data appropriately
+3. Clean history if necessary
+4. Update local configuration
+```
+
+Most important:
+
+> Treat an exposed secret as compromised.
+
+---
+
+## 13. .gitignore vs .dockerignore
+
+```text id="q8w3n6"
+.gitignore
+→ controls Git tracking
+
+.dockerignore
+→ controls Docker build context
+```
+
+They solve different problems.
+
+---
+
+## 14. Check Tracked Files
+
+```bash id="x4m7p2"
+git ls-files
+```
+
+Shows files currently tracked by Git.
+
+---
+
+## 15. Check Ignored Files
+
+```bash id="n6q1w8"
+git status --ignored
+```
+
+Can show ignored files/directories.
+
+---
+
+## 16. What to Track in This Project
+
+```text id="a7k2m9"
+package.json          → TRACK
+package-lock.json     → TRACK
+src/                  → TRACK
+test/                 → TRACK
+Dockerfile            → TRACK
+compose.yaml          → TRACK
+.env.example          → TRACK
+.gitignore            → TRACK
+```
+
+Usually ignore:
+
+```text id="p4x8r1"
+node_modules/         → IGNORE
+.env                  → IGNORE
+coverage/             → IGNORE
+*.log                 → IGNORE
+```
+
+---
+
+## 17. Useful Commands
+
+```bash id="h2m7q4"
+git status
+git ls-files
+git status --ignored
+git check-ignore <file>
+```
+
+`git check-ignore` can help determine whether a file is being ignored.
+
+Example:
+
+```bash id="j8q3w6"
+git check-ignore -v .env
+```
+
+This can show which `.gitignore` rule caused the file to be ignored.
+
+---
+
+## 18. Golden Mental Model
+
+```text id="n5x2c8"
+.gitignore
+    ↓
+"What should Git normally ignore?"
+
+.gitignore ≠ secret vault
+.gitignore ≠ history deletion
+.gitignore ≠ file deletion
+```
+
+---
+
+## 19. Easy Memory
+
+```text id="c7m1q9"
+node_modules → dependencies → ignore
+.env         → local secrets/config → ignore
+.env.example → template → commit
+package.json → dependency definition → commit
+package-lock → exact dependency tree → commit
+```
+# Phase 3 — Part 13: GitHub Pull Requests & Code Review
+
+## 1. Pull Request
+
+A Pull Request (PR) is a GitHub collaboration mechanism used to propose changes from one branch into another.
+
+Typical flow:
+
+```text
+feature branch
+      ↓
+    push
+      ↓
+   GitHub
+      ↓
+ Pull Request
+      ↓
+ Code Review
+      ↓
+    CI
+      ↓
+   Approval
+      ↓
+    Merge
+```
+
+---
+
+## 2. Example
+
+```text
+feature/health-check
+          ↓
+         PR
+          ↓
+         main
+```
+
+The developer proposes:
+
+> "Please review my changes and integrate them into main if they meet the project requirements."
+
+---
+
+## 3. Git vs GitHub
+
+### Git
+
+Provides:
+
+```text
+commit
+branch
+merge
+rebase
+reset
+restore
+revert
+```
+
+### GitHub
+
+Provides collaboration features such as:
+
+```text
+Pull Requests
+Code Review
+Issues
+GitHub Actions
+Repository permissions
+Releases
+```
+
+---
+
+## 4. PR vs Merge
+
+### Merge
+
+Git operation:
+
+```bash
+git merge feature/health-check
+```
+
+Combines branch histories.
+
+### Pull Request
+
+GitHub workflow:
+
+```text
+branch
+  ↓
+PR
+  ↓
+review
+  ↓
+merge
+```
+
+A PR is not the same thing as a Git merge command.
+
+---
+
+## 5. PR vs git pull
+
+### `git pull`
+
+```bash
+git pull
+```
+
+Brings remote changes into the current local branch.
+
+### Pull Request
+
+```text
+feature branch → target branch
+```
+
+Requests integration of proposed changes through GitHub.
+
+Memory trick:
+
+```text
+git pull
+→ remote → local
+
+Pull Request
+→ my branch → another branch
+```
+
+---
+
+## 6. Typical Feature Workflow
+
+```bash
+git switch -c feature/health-check
+
+# modify code
+
+npm test
+
+git add .
+git diff --staged
+
+git commit -m "Add health endpoint test"
+
+git push -u origin feature/health-check
+```
+
+Then create a PR on GitHub.
+
+---
+
+## 7. PR Diff
+
+A PR shows the changes between the source and target branches.
+
+Added lines:
+
+```diff
++ new code
+```
+
+Deleted lines:
+
+```diff
+- old code
+```
+
+The reviewer primarily examines:
+
+```text
+What changed?
+Why?
+Does it work?
+Could it break anything?
+Is it consistent with the project?
+```
+
+---
+
+## 8. Code Review
+
+Reviewers may check:
+
+* Correctness
+* Readability
+* Error handling
+* Security
+* Tests
+* Performance where relevant
+* Project conventions
+* Unnecessary changes
+
+A review may result in:
+
+```text
+Approve
+```
+
+or:
+
+```text
+Request changes
+```
+
+---
+
+## 9. Updating an Existing PR
+
+If changes are requested:
+
+```text
+Reviewer
+   ↓
+changes requested
+   ↓
+developer modifies branch
+   ↓
+new commit
+   ↓
+git push
+   ↓
+same PR updates
+```
+
+Example:
+
+```bash
+git add .
+git commit -m "Add health endpoint test"
+git push
+```
+
+---
+
+## 10. CI + PR
+
+A professional workflow can be:
+
+```text
+Feature branch
+      ↓
+Pull Request
+      ↓
+GitHub Actions
+      ↓
+npm
+```
+# Phase 3 — Part 15: Git Rebase
+
+## 1. Definition
+
+`git rebase` replays your branch's commits on top of a new base commit.
+
+Mental model:
+
+```text
+rebase
+=
+"Move my work onto a newer starting point."
+```
+
+---
+
+## 2. Example
+
+Before:
+
+```text
+A ─ B ─ C ─ F ─ G    main
+          \
+           D ─ E     feature
+```
+
+Run:
+
+```bash
+git switch feature
+git rebase main
+```
+
+After:
+
+```text
+A ─ B ─ C ─ F ─ G ─ D' ─ E'    feature
+```
+
+`D` and `E` are replayed as new commits.
+
+---
+
+## 3. Rebase vs Merge
+
+### Merge
+
+```bash
+git merge main
+```
+
+Can produce:
+
+```text
+A ─ B ─ C ─ F ─ G
+     \           \
+      D ─ E ───── M
+```
+
+### Rebase
+
+```bash
+git rebase main
+```
+
+Produces a linear-looking history:
+
+```text
+A ─ B ─ C ─ F ─ G ─ D' ─ E'
+```
+
+---
+
+## 4. Main Difference
+
+```text
+merge
+→ combines histories
+
+rebase
+→ replays commits onto a new base
+```
+
+---
+
+## 5. Why Rebase?
+
+Common reasons:
+
+* Keep feature branch updated
+* Produce a cleaner linear history
+* Avoid unnecessary merge commits in some workflows
+* Prepare a feature branch before integration
+
+---
+
+## 6. Important Warning
+
+Rebase rewrites commit history.
+
+Therefore:
+
+> Avoid casually rebasing shared/public history.
+
+Rebase is commonly used on your own feature branch before integration.
+
+---
+
+## 7. Update Feature Branch
+
+Typical workflow:
+
+```bash
+git fetch origin
+git rebase origin/main
+```
+
+If repository uses `master`:
+
+```bash
+git fetch origin
+git rebase origin/master
+```
+
+---
+
+## 8. Rebase Conflict
+
+If conflict occurs:
+
+```text
+rebase
+  ↓
+conflict
+  ↓
+git status
+  ↓
+resolve file
+  ↓
+git add <file>
+  ↓
+git rebase --continue
+```
+
+---
+
+## 9. Cancel Rebase
+
+```bash
+git rebase --abort
+```
+
+This cancels the current rebase and returns to the previous state.
+
+---
+
+## 10. Rebase and Push
+
+Because rebase creates new commit identities, a previously pushed feature branch may require:
+
+```bash
+git push --force-with-lease
+```
+
+Prefer:
+
+```text
+--force-with-lease
+```
+
+over blindly using:
+
+```text
+--force
+```
+
+when rewriting your own remote feature branch.
+
+Do not force-push shared branches unless explicitly allowed by the team workflow.
+
+---
+
+## 11. `git pull --rebase`
+
+Normal:
+
+```bash
+git pull
+```
+
+Conceptually:
+
+```text
+fetch + integrate
+```
+
+With rebase:
+
+```bash
+git pull --rebase
+```
+
+Conceptually:
+
+```text
+fetch + rebase local commits
+```
+
+---
+
+## 12. Useful Commands
+
+```bash
+git status
+
+git log --oneline --graph --decorate --all
+
+git fetch origin
+
+git rebase origin/main
+
+git rebase --continue
+
+git rebase --abort
+
+git push --force-with-lease
+```
+
+---
+
+## 13. Golden Mental Model
+
+```text
+MERGE
+→ "Combine the two histories."
+
+REBASE
+→ "Take my commits and replay them on the newer base."
+```
+
+---
+
+## 14. Beginner Rule
+
+```text
+Own feature branch
+→ rebase can be useful
+
+Shared/public branch
+→ don't casually rewrite history
+```
+
+---
+
+## 15. Final Picture
+
+```text
+             main
+A ─ B ─ C ─ F ─ G
+          \
+           D ─ E
+          feature
+
+             ↓ rebase
+
+A ─ B ─ C ─ F ─ G ─ D' ─ E'
+                       feature
+```
+
+# Phase 3 — Part 16: Git Cherry-Pick
+
+## 1. Definition
+
+`git cherry-pick` applies the changes introduced by a specific commit to the current branch.
+
+Mental model:
+
+```text id="0a7j3x"
+"I don't want the whole branch.
+I only want this commit."
+```
+
+---
+
+## 2. Basic Command
+
+```bash id="j4k9m2"
+git switch main
+git cherry-pick <commit-hash>
+```
+
+Example:
+
+```bash id="x8p3v6"
+git cherry-pick a7b3c91
+```
+
+---
+
+## 3. Find Commit Hash
+
+```bash id="q5m7n1"
+git log --oneline --all
+```
+
+Example:
+
+```text id="w3k8r4"
+f81a2de Add Redis cache
+c4b921a Add health test
+9e8a712 Update README
+```
+
+Then:
+
+```bash id="m6p2x9"
+git cherry-pick c4b921a
+```
+
+---
+
+## 4. Cherry-Pick Creates a New Commit
+
+Original:
+
+```text id="b7q4m1"
+feature
+A ─ B ─ C
+```
+
+Cherry-picked:
+
+```text id="n8x2k6"
+main
+A ─ B ─ C'
+```
+
+The change is applied, but the resulting commit has a new identity.
+
+---
+
+## 5. Merge vs Rebase vs Cherry-Pick
+
+### Merge
+
+```bash id="e1k7m4"
+git merge feature
+```
+
+```text
+Bring the branch/history together.
+```
+
+### Rebase
+
+```bash id="r9p3x5"
+git rebase main
+```
+
+```text
+Replay my commits on a new base.
+```
+
+### Cherry-Pick
+
+```bash id="w6n2q8"
+git cherry-pick abc123
+```
+
+```text
+Apply this particular commit.
+```
+
+Memory:
+
+```text id="u4m8c1"
+MERGE      → branch
+REBASE     → my commits onto new base
+CHERRY-PICK → one commit
+```
+
+---
+
+## 6. Conflict Handling
+
+If conflict occurs:
+
+```bash id="f3q7n2"
+git status
+```
+
+Resolve the files.
+
+Then:
+
+```bash id="k8m1v5"
+git add <resolved-file>
+git cherry-pick --continue
+```
+
+---
+
+## 7. Abort
+
+To cancel the cherry-pick:
+
+```bash id="x2r9p6"
+git cherry-pick --abort
+```
+
+---
+
+## 8. Common Uses
+
+Cherry-pick can be useful for:
+
+* Applying a specific hotfix
+* Moving a small fix to another branch
+* Applying a particular change to a release branch
+* Selectively transferring one commit
+
+---
+
+## 9. Golden Mental Model
+
+```text id="p6w3k8"
+MERGE
+→ Bring the branch.
+
+REBASE
+→ Replay my branch on a new base.
+
+CHERRY-PICK
+→ Bring this commit.
+```
+
+---
+
+## 10. Basic Workflow
+
+```text id="j9v4m2"
+Find commit
+     ↓
+git log --oneline
+     ↓
+Switch target branch
+     ↓
+git switch main
+     ↓
+Cherry-pick
+     ↓
+git cherry-pick <hash>
+     ↓
+Test
+     ↓
+Push
+```
+
+# GitHub Issues + Practical Team Workflow
+
+## 1. GitHub Issue
+
+An Issue is used to track work in a repository.
+
+Common uses:
+
+* Bug
+* Feature
+* Testing
+* Documentation
+* Improvement
+* Refactoring
+
+### Mental Model
+
+```text
+Issue = What needs to be done?
+```
+
+Example:
+
+```text
+Issue #12
+Add test for /cache endpoint
+```
+
+---
+
+## 2. Issue vs Pull Request
+
+```text
+Issue
+  ↓
+Describes the work/problem
+
+Pull Request
+  ↓
+Proposes code changes that solve the work/problem
+```
+
+Remember:
+
+```text
+Issue = Work
+PR = Code proposal
+```
+
+---
+
+## 3. Professional Development Flow
+
+```text
+Issue
+  ↓
+Branch
+  ↓
+Code
+  ↓
+Commit
+  ↓
+Push
+  ↓
+Pull Request
+  ↓
+CI
+  ↓
+Code Review
+  ↓
+Merge
+  ↓
+Issue Closed
+```
+
+---
+
+## 4. Branch Naming
+
+Common conventions:
+
+```text
+feature/login
+feature/user-profile
+
+fix/redis-cache
+fix/login-error
+
+test/health-endpoint
+
+docs/update-readme
+
+chore/update-dependencies
+```
+
+The branch name should communicate its purpose.
+
+---
+
+## 5. Typical Commands
+
+```bash
+git switch main
+git pull
+
+git switch -c feature/example
+
+git status
+
+git add .
+
+git commit -m "Add example feature"
+
+git push -u origin feature/example
+```
+
+After the first push:
+
+```bash
+git push
+```
+
+is usually enough because upstream tracking is configured.
+
+---
+
+## 6. Pull Request
+
+A PR proposes merging one branch into another.
+
+Example:
+
+```text
+base: main
+compare: feature/login
+```
+
+Meaning:
+
+```text
+feature/login
+      ↓
+    main
+```
+
+---
+
+## 7. Linking an Issue
+
+A PR can contain:
+
+```text
+Closes #12
+```
+
+This connects the PR to Issue #12.
+
+After the PR is merged, GitHub can automatically close the linked issue.
+
+---
+
+## 8. What Reviewers Check
+
+Reviewers may check:
+
+* Correctness
+* Readability
+* Error handling
+* Security
+* Tests
+* Maintainability
+* Project conventions
+
+---
+
+## 9. Why Branches Are Used
+
+Avoid directly putting unfinished work into `main`.
+
+Instead:
+
+```text
+main
+ │
+ ├── feature/login
+ ├── feature/users
+ └── fix/redis
+```
+
+Each change can be developed and reviewed separately.
+
+---
+
+## 10. Same PR Can Receive More Commits
+
+A PR is automatically updated when more commits are pushed to its source branch.
+
+```text
+Commit 1
+   ↓
+Push
+   ↓
+PR
+   ↓
+Review comment
+   ↓
+Commit 2
+   ↓
+Push
+   ↓
+Same PR updated
+```
+
+---
+
+## 11. Most Important Mental Model
+
+```text
+ISSUE
+"What needs to be done?"
+
+BRANCH
+"Where will I work?"
+
+COMMIT
+"What change did I make?"
+
+PUSH
+"Send it to GitHub."
+
+PR
+"Please review my change."
+
+CI
+"Does it pass automated checks?"
+
+REVIEW
+"Is the change acceptable?"
+
+MERGE
+"Integrate it."
+
+ISSUE CLOSED
+"Work completed."
+```
+
+## Quick Difference
+
+```text
+Git        → Version control system
+GitHub     → Collaboration platform
+
+Issue      → Track work
+Branch     → Isolate work
+Commit     → Save a change
+Push       → Upload commits
+PR         → Propose changes for review
+Review     → Check the proposed change
+Merge      → Integrate branches
+```
