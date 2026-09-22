@@ -46,7 +46,8 @@ app.get("/health",(req,res) => {
     res.status(200).json({
         status: "OK",
         environment: NODE_ENV,
-        service: 'devops-demo-api-main-test'
+        service: 'devops-demo-api-v2',
+        version: "1.0.1",
     })
 })
 
