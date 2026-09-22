@@ -3748,3 +3748,264 @@ Test
      ↓
 Push
 ```
+
+# GitHub Issues + Practical Team Workflow
+
+## 1. GitHub Issue
+
+An Issue is used to track work in a repository.
+
+Common uses:
+
+* Bug
+* Feature
+* Testing
+* Documentation
+* Improvement
+* Refactoring
+
+### Mental Model
+
+```text
+Issue = What needs to be done?
+```
+
+Example:
+
+```text
+Issue #12
+Add test for /cache endpoint
+```
+
+---
+
+## 2. Issue vs Pull Request
+
+```text
+Issue
+  ↓
+Describes the work/problem
+
+Pull Request
+  ↓
+Proposes code changes that solve the work/problem
+```
+
+Remember:
+
+```text
+Issue = Work
+PR = Code proposal
+```
+
+---
+
+## 3. Professional Development Flow
+
+```text
+Issue
+  ↓
+Branch
+  ↓
+Code
+  ↓
+Commit
+  ↓
+Push
+  ↓
+Pull Request
+  ↓
+CI
+  ↓
+Code Review
+  ↓
+Merge
+  ↓
+Issue Closed
+```
+
+---
+
+## 4. Branch Naming
+
+Common conventions:
+
+```text
+feature/login
+feature/user-profile
+
+fix/redis-cache
+fix/login-error
+
+test/health-endpoint
+
+docs/update-readme
+
+chore/update-dependencies
+```
+
+The branch name should communicate its purpose.
+
+---
+
+## 5. Typical Commands
+
+```bash
+git switch main
+git pull
+
+git switch -c feature/example
+
+git status
+
+git add .
+
+git commit -m "Add example feature"
+
+git push -u origin feature/example
+```
+
+After the first push:
+
+```bash
+git push
+```
+
+is usually enough because upstream tracking is configured.
+
+---
+
+## 6. Pull Request
+
+A PR proposes merging one branch into another.
+
+Example:
+
+```text
+base: main
+compare: feature/login
+```
+
+Meaning:
+
+```text
+feature/login
+      ↓
+    main
+```
+
+---
+
+## 7. Linking an Issue
+
+A PR can contain:
+
+```text
+Closes #12
+```
+
+This connects the PR to Issue #12.
+
+After the PR is merged, GitHub can automatically close the linked issue.
+
+---
+
+## 8. What Reviewers Check
+
+Reviewers may check:
+
+* Correctness
+* Readability
+* Error handling
+* Security
+* Tests
+* Maintainability
+* Project conventions
+
+---
+
+## 9. Why Branches Are Used
+
+Avoid directly putting unfinished work into `main`.
+
+Instead:
+
+```text
+main
+ │
+ ├── feature/login
+ ├── feature/users
+ └── fix/redis
+```
+
+Each change can be developed and reviewed separately.
+
+---
+
+## 10. Same PR Can Receive More Commits
+
+A PR is automatically updated when more commits are pushed to its source branch.
+
+```text
+Commit 1
+   ↓
+Push
+   ↓
+PR
+   ↓
+Review comment
+   ↓
+Commit 2
+   ↓
+Push
+   ↓
+Same PR updated
+```
+
+---
+
+## 11. Most Important Mental Model
+
+```text
+ISSUE
+"What needs to be done?"
+
+BRANCH
+"Where will I work?"
+
+COMMIT
+"What change did I make?"
+
+PUSH
+"Send it to GitHub."
+
+PR
+"Please review my change."
+
+CI
+"Does it pass automated checks?"
+
+REVIEW
+"Is the change acceptable?"
+
+MERGE
+"Integrate it."
+
+ISSUE CLOSED
+"Work completed."
+```
+
+## Quick Difference
+
+```text
+Git        → Version control system
+GitHub     → Collaboration platform
+
+Issue      → Track work
+Branch     → Isolate work
+Commit     → Save a change
+Push       → Upload commits
+PR         → Propose changes for review
+Review     → Check the proposed change
+Merge      → Integrate branches
+```
