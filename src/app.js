@@ -3,7 +3,7 @@ import express from 'express';
 import dotenv from "dotenv";
 import DemoUser from './model/demoUser.model.js';
 import { redisClient } from './config/redis.js';
-
+import cors from 'cors';
 dotenv.config();
 
 const app = express();
@@ -12,6 +12,9 @@ const app = express();
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 
+app.use(cors({
+  origin: 'https://devops-demo-frontend.vercel.app/'
+}))
 app.use(express.json());
 
 app.get("/", (req,res) => {
