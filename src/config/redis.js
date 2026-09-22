@@ -6,7 +6,6 @@ import { createClient } from "redis";
 
 const redisClient = createClient({
   url: process.env.REDIS_URL,
-  token: process.env.REDIS_TOKEN,
 });
 
 redisClient.on("error", (error) => {
