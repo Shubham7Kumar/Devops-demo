@@ -54,7 +54,7 @@ app.get("/health",(req,res) => {
 app.get("/api-info",(req,res) => {
   res.json({
     name: "devops-demo-api",
-    version: "1.0.2",
+    version: "1.0.3",
     environment: NODE_ENV
   })
 })
