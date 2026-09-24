@@ -54,7 +54,7 @@ app.get("/health",(req,res) => {
 app.get("/api-info",(req,res) => {
   res.json({
     name: "devops-demo-api",
-    version: "1.0.2",
+    version: "1.0.3",
     environment: NODE_ENV
   })
 })
@@ -75,7 +75,7 @@ app.post("/users", async (req, res) => {
 
     res.status(201).json(user);
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
       message: error.message,
     });
   }
@@ -146,4 +146,10 @@ app.get("/cache", async (req, res) => {
   }
 });
 
+
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Route not found",
+  });
+});
 export default app;
