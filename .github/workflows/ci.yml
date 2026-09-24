@@ -23,3 +23,6 @@ jobs:
 
         - name: Run tests
           run: npm test
+          env: 
+            MONGO_URI: ${{ secrets.MONGO_URI }}
+            REDIS_URL: ${{ secrets.REDIS_URL }}

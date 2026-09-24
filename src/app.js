@@ -75,7 +75,7 @@ app.post("/users", async (req, res) => {
 
     res.status(201).json(user);
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
       message: error.message,
     });
   }
@@ -146,4 +146,10 @@ app.get("/cache", async (req, res) => {
   }
 });
 
+
+app.use((req, res) => {
+  res.status(404).json({
+    message: "Route not found",
+  });
+});
 export default app;
