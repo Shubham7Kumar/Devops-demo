@@ -10,8 +10,7 @@ const connectDB = async () => {
 
     console.log("MongoDB connected");
   } catch (error) {
-    console.error("MongoDB connection failed:", error.message);
-
+   console.error("MongoDB connection failed:", error.name, error.message);
     // Stop the application because the API cannot
     // work correctly without its required database.
     process.exit(1);
