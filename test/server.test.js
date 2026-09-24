@@ -71,11 +71,11 @@ describe("Users API", () => {
             const response = await request(app)
                   .post("/users")
                   .send({
-                        name: "Test User",
+                        name: "TestUser",
                   });
 
             expect(response.statusCode).toBe(201);
-            expect(response.body.name).toBe("Test User");
+            expect(response.body.name).toBe("TestUser");
       });
 });
 
@@ -107,7 +107,7 @@ test("POST /users should handle unexpected fields", async () => {
   const response = await request(app)
     .post("/users")
     .send({
-      name: "Extra Field User",
+      name: "ExtraFieldUser",
       role: "admin",
       randomField: "hello",
     });
@@ -115,7 +115,7 @@ test("POST /users should handle unexpected fields", async () => {
 //   console.log("Unexpected fields response:", response.body);
 
   expect(response.statusCode).toBe(201);
-  expect(response.body.name).toBe("Extra Field User");
+  expect(response.body.name).toBe("ExtraFieldUser");
 });
 
 test("POST /users should handle very long name", async () => {
@@ -164,7 +164,7 @@ test("GET /users should return users and use Redis cache", async () => {
   await request(app)
     .post("/users")
     .send({
-      name: "Cache Test User",
+      name: "CacheTestUser",
     });
 
   const firstResponse = await request(app)
@@ -178,7 +178,7 @@ test("GET /users should return users and use Redis cache", async () => {
   expect(firstResponse.body.data).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
-        name: "Cache Test User",
+        name: "CacheTestUser",
       }),
     ])
   );
@@ -192,7 +192,7 @@ test("GET /users should return users and use Redis cache", async () => {
   expect(secondResponse.body.data).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
-        name: "Cache Test User",
+        name: "CacheTestUser",
       }),
     ])
   );

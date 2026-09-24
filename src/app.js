@@ -1,46 +1,59 @@
 // DevOps learning project
-import express from 'express';
+import express from "express";
 import dotenv from "dotenv";
-import DemoUser from './model/demoUser.model.js';
-import { redisClient } from './config/redis.js';
-import cors from 'cors';
+import DemoUser from "./model/demoUser.model.js";
+import { redisClient } from "./config/redis.js";
+import cors from "cors";
+import {
+  getMetrics,
+  incrementErrors,
+  incrementRequests,
+} from "./config/metrics.js";
 dotenv.config();
 
 const app = express();
 
-
-
 const NODE_ENV = process.env.NODE_ENV || "development";
 
-app.use(cors({
-  origin: ['https://devops-demo-frontend.vercel.app','http://localhost:5173']
-}))
+app.use(
+  cors({
+    origin: [
+      "https://devops-demo-frontend.vercel.app",
+      "http://localhost:5173",
+    ],
+  }),
+);
 app.use(express.json());
 
-app.use((req,res,next) => {
+app.use((req, res, next) => {
   const start = Date.now();
 
-  res.on("finish",() => {
-    const duration = Date.now() - start;
+  incrementRequests();
 
-    console.log(JSON.stringify({
-  method: req.method,
-  path: req.originalUrl,
-  statusCode: res.statusCode,
-  durationMs: duration,
-  environment: NODE_ENV
-}));
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    if (res.statusCode >= 500) {
+      incrementErrors();
+    }
+    console.log(
+      JSON.stringify({
+        method: req.method,
+        path: req.originalUrl,
+        statusCode: res.statusCode,
+        durationMs: duration,
+        environment: NODE_ENV,
+      }),
+    );
   });
   next();
-})
-
-app.get("/", (req,res) => {
-    res.json({
-        message: "Devops demo api is running",
-        environment: NODE_ENV
-    });
 });
 
+app.get("/", (req, res) => {
+  res.json({
+    message: "Devops demo api is running",
+    environment: NODE_ENV,
+  });
+});
 
 /*
 ========================================================
@@ -59,23 +72,26 @@ It answers a simple question:
 "Is the application process responding?"
 ========================================================
 */
-app.get("/health",(req,res) => {
-    res.status(200).json({
-        status: "OK",
-        environment: NODE_ENV,
-        service: 'devops-demo-api-v2',
-        version: "1.0.1",
-    })
-})
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    environment: NODE_ENV,
+    service: "devops-demo-api-v2",
+    version: "1.0.1",
+  });
+});
 
-app.get("/api-info",(req,res) => {
+app.get("/api-info", (req, res) => {
   res.json({
     name: "devops-demo-api",
     version: "1.0.3",
-    environment: NODE_ENV
-  })
-})
+    environment: NODE_ENV,
+  });
+});
 
+app.get("/metrics", (req, res) => {
+  res.json(getMetrics());
+});
 
 // ======================================================
 // DEVOPS NOTEBOOK — DATABASE TEST ROUTES
@@ -83,9 +99,18 @@ app.get("/api-info",(req,res) => {
 
 app.post("/users", async (req, res) => {
   try {
+    const mongoStart = Date.now();
     const user = await DemoUser.create({
       name: req.body.name,
     });
+
+    const mongoDuration = Date.now() - mongoStart;
+
+
+    console.log(JSON.stringify({
+      operation: "mongodb.find",
+      durationMs: mongoDuration
+    }));
 
     // Invalidate users cache
     await redisClient.del("users");
@@ -104,7 +129,13 @@ app.get("/users", async (req, res) => {
 
     // Try Redis, but don't let Redis failure break the API
     try {
+      const redisStart = Date.now();
       cachedUsers = await redisClient.get("users");
+      const redisDuration = Date.now() - redisStart;
+      console.log(JSON.stringify({
+        operation: "redis.get",
+        durationMs: redisDuration
+      }));
     } catch (redisError) {
       console.error("Redis GET failed:", redisError.message);
     }
@@ -162,7 +193,6 @@ app.get("/cache", async (req, res) => {
     });
   }
 });
-
 
 app.use((req, res) => {
   res.status(404).json({
