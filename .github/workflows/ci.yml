@@ -22,7 +22,10 @@ jobs:
           run: npm ci
 
         - name: Run tests
-          run: npm test
-          env: 
-            MONGO_URI: ${{ secrets.MONGO_URI }}
-            REDIS_URL: ${{ secrets.REDIS_URL }}
+            run: |
+              echo "MONGO_URI is set: ${MONGO_URI:+yes}"
+              echo "REDIS_URL is set: ${REDIS_URL:+yes}"
+              npm test
+            env:
+              MONGO_URI: ${{ secrets.MONGO_URI }}
+              REDIS_URL: ${{ secrets.REDIS_URL }}
